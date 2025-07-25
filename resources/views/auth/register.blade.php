@@ -57,12 +57,6 @@
         <option value="admin">Administrateur</option>
     </select>
 </div>
-<div class="mt-4">
-    <label for="role">Rôle</label>
-    <select name="role" required>...</select>
-    <input type="hidden" name="role" value="eleve">
-
-</div>
 
     </form>
 </x-guest-layout>
