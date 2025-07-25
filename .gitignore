@@ -1,0 +1,14 @@
+/vendor
+/node_modules
+/.env
+/public/storage
+/storage/*.key
+/storage/framework/cache/*
+/storage/logs/*
+/storage/app/public
+/database/*.sqlite
+.idea
+.DS_Store
+*.log
+npm-debug.log
+yarn-error.log
