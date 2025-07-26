@@ -2,20 +2,29 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Eleve extends Model
 {
-    protected $fillable = ['user_id', 'parent_id'];
+    use HasFactory;
 
-    public function user()
+    protected $fillable = ['nom', 'prenom', 'email', 'identifiant', 'classe_id', 'date_naissance', 'document_justificatif'];
+       
+
+    public function classe()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Classe::class);
     }
 
-    public function parent()
+    public function notes()
     {
-        return $this->belongsTo(User::class, 'parent_id');
+        return $this->hasMany(Note::class);
+    }
+
+    public function bulletins()
+    {
+        return $this->hasMany(Bulletin::class);
     }
 }
 
