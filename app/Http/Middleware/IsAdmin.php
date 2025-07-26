@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
@@ -12,7 +11,7 @@ class IsAdmin
         if (Auth::check() && Auth::user()->role === 'admin') {
             return $next($request);
         }
-        abort(403, 'Accès refusé (Admin uniquement)');
+
+        abort(403, 'Accès réservé aux administrateurs.');
     }
 }
-

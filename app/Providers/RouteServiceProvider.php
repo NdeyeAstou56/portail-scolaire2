@@ -11,7 +11,9 @@ class RouteServiceProvider extends ServiceProvider
      * Le chemin vers lequel les utilisateurs sont redirigés après connexion.
      * Modifie selon ton besoin : /admin, /enseignant, etc.
      */
-    public const HOME = '/dashboard';
+    //public const HOME = '/dashboard';
+    public const HOME = '/admin/dashboard'; // au lieu de /home
+
 
     /**
      * Définir les routes de l'application.

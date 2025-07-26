@@ -62,9 +62,10 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
         // 🎯 Middlewares personnalisés par rôle
-        'admin' => \App\Http\Middleware\IsAdmin::class,
+         'admin' => \App\Http\Middleware\IsAdmin::class,
         'enseignant' => \App\Http\Middleware\IsEnseignant::class,
         'parent' => \App\Http\Middleware\IsParent::class,
         'eleve' => \App\Http\Middleware\IsEleve::class,
     ];
 }
+$user = \App\Models\User::where('email', 'fatoufall0320@gmail.com')->first();
