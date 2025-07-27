@@ -6,6 +6,9 @@ use App\Models\Eleve;
 use App\Models\Classe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Note;      
+use App\Models\Bulletin;  
 
 class EleveController extends Controller
 {
@@ -118,5 +121,26 @@ public function update(Request $request, Eleve $eleve)
     $eleve->delete();
     return redirect()->route('eleves.index')->with('success', 'Élève supprimé.');
 }
+    public function portailEleve()
+    {
+        $user = Auth::user();
+
+        // Récupérer les notes récentes (exemple : 5 dernières notes)
+        $recentNotes = Note::where('eleve_id', $user->id)
+                        ->orderBy('created_at', 'desc')
+                        ->take(5)
+                        ->get();
+
+        // Récupérer les bulletins liés à l'élève
+        $bulletins = Bulletin::where('eleve_id', $user->id)
+                    ->orderByDesc('created_at')
+                    ->get();
+
+        // Exemple d'info supplémentaire (à adapter selon ta logique)
+        $nextCourse = "Mathématiques - Lundi 8h00";
+        $currentYear = "2024-2025";
+
+        return view('eleves.dashboard', compact('recentNotes', 'bulletins', 'nextCourse', 'currentYear'));
+    }
 
 }

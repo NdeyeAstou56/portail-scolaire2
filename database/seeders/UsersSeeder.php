@@ -20,5 +20,14 @@ class UsersSeeder extends Seeder
                 'identifiant' => 'ADM' . now()->year . '0001',
             ]
         );
+        User::firstOrCreate(
+            ['email' => 'enseignant@ecole.com'],
+            [
+                'name' => 'prof Principal',
+                'password' => Hash::make('password'),
+                'role' => 'enseignant',
+                'identifiant' => 'AB23' . now()->year . '0001',
+            ]
+        );
     }
 }
