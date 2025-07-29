@@ -25,5 +25,11 @@ class Note extends Model
     {
         return $this->belongsTo(Periode::class);
     }
+   
+
+public function enseignant()
+{
+    return $this->belongsTo(Enseignant::class);
+}
 }
 

@@ -9,6 +9,9 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Note;      
 use App\Models\Bulletin;  
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
 
 class EleveController extends Controller
 {
@@ -30,32 +33,35 @@ class EleveController extends Controller
 public function store(Request $request)
 {
     $validated = $request->validate([
-    'nom' => 'required|string',
-    'prenom' => 'required|string',
-    'email' => 'required|email|unique:eleves,email',
-    'date_naissance' => 'required|date|before:today',
-    'classe_id' => 'required|exists:classes,id',
-    'document_justificatif' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
-]);
+        'nom' => 'required|string',
+        'prenom' => 'required|string',
+        'email' => 'required|email|unique:eleves,email',
+        'date_naissance' => 'required|date|before:today',
+        'classe_id' => 'required|exists:classes,id',
+        'document_justificatif' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+    ]);
 
-$validated['identifiant'] = strtolower($request->nom . '.' . $request->prenom . '.' . rand(1000, 9999));
+    $validated['identifiant'] = strtolower($request->nom . '.' . $request->prenom . '.' . rand(1000, 9999));
 
-// Récupérer la date de naissance explicitement
-$validated['date_naissance'] = $request->input('date_naissance');
+    if ($request->hasFile('document_justificatif')) {
+        $file = $request->file('document_justificatif');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('uploads/eleves'), $filename);
+        $validated['document_justificatif'] = $filename;
+    }
 
-// Gérer le fichier uploadé
-if ($request->hasFile('document_justificatif')) {
-    $file = $request->file('document_justificatif');
-    $filename = time() . '_' . $file->getClientOriginalName();
-    $file->move(public_path('uploads/eleves'), $filename);
-    $validated['document_justificatif'] = $filename;
-}
+    // Création du User lié
+    $user = User::create([
+        'name' => $request->nom . ' ' . $request->prenom,
+        'email' => $request->email,
+        'password' => Hash::make('Passer123'), // tu peux changer ça
+        'role' => 'eleve',
+    ]);
 
-// Debug: vérifie bien que les données sont prêtes avant création
-// dd($validated);
-
-Eleve::create($validated);
-
+    // Création de l'élève avec association user_id
+    $eleve = new Eleve($validated);
+    $eleve->user()->associate($user);
+    $eleve->save();
 
     return redirect()->route('eleves.index')->with('success', 'Élève ajouté avec succès.');
 }
@@ -121,26 +127,50 @@ public function update(Request $request, Eleve $eleve)
     $eleve->delete();
     return redirect()->route('eleves.index')->with('success', 'Élève supprimé.');
 }
-    public function portailEleve()
-    {
-        $user = Auth::user();
+  public function portailEleve()
+{
+    $user = auth()->user();
 
-        // Récupérer les notes récentes (exemple : 5 dernières notes)
-        $recentNotes = Note::where('eleve_id', $user->id)
-                        ->orderBy('created_at', 'desc')
-                        ->take(5)
-                        ->get();
-
-        // Récupérer les bulletins liés à l'élève
-        $bulletins = Bulletin::where('eleve_id', $user->id)
-                    ->orderByDesc('created_at')
-                    ->get();
-
-        // Exemple d'info supplémentaire (à adapter selon ta logique)
-        $nextCourse = "Mathématiques - Lundi 8h00";
-        $currentYear = "2024-2025";
-
-        return view('eleves.dashboard', compact('recentNotes', 'bulletins', 'nextCourse', 'currentYear'));
+    if (!$user) {
+        return "Utilisateur non authentifié"; // pour debug, tu peux remplacer par abort(403)
     }
+
+    $eleve = $user->eleve;
+
+    if (!$eleve) {
+        return "Pas d'élève lié à cet utilisateur"; // debug aussi
+    }
+
+
+    // récupère les notes récentes et les bulletins liés à cet élève
+    $recentNotes = $eleve->notes()->latest()->take(5)->get();
+    $moyenne = $recentNotes->avg('note');  // ou 'valeur' selon ta colonne
+
+    $bulletins = $eleve->bulletins()->with(['annee_scolaire', 'periode'])->latest()->get();
+
+    return view('eleves.dashboard', compact('eleve', 'recentNotes', 'bulletins','moyenne'));
+}
+
+
+
+
+
+
+    public function assignUserToEleve(Request $request)
+{
+    $request->validate([
+        'eleve_id' => 'required|exists:eleves,id',
+        'user_id' => 'required|exists:users,id',
+    ]);
+
+    $user = User::where('role', 'eleve')->findOrFail($request->user_id);
+    $eleve = Eleve::findOrFail($request->eleve_id);
+
+    $eleve->user()->associate($user);
+    $eleve->save();
+
+    return redirect()->back()->with('success', 'Utilisateur associé à l’élève avec succès.');
+}
+
 
 }

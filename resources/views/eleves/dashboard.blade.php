@@ -429,13 +429,13 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-value">
-                        {{ $recentNotes && $recentNotes->count() > 0 ? number_format($recentNotes->avg('valeur'), 1) : 'N/A' }}/20
+                         {{ $moyenne !== null ? number_format($moyenne, 1) : 'N/A' }}/20
                     </div>
                     <div class="stat-label">Moyenne générale</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value">
-                        {{ $recentNotes && $recentNotes->count() > 0 ? number_format($recentNotes->max('valeur'), 1) : 'N/A' }}/20
+                        {{ $recentNotes && $recentNotes->count() > 0 ? number_format($recentNotes->max('note'), 1) : 'N/A' }}/20
                     </div>
                     <div class="stat-label">Meilleure note</div>
                 </div>
@@ -462,7 +462,7 @@
                         @foreach($recentNotes as $note)
                             <tr>
                                 <td>{{ $note->matiere->nom ?? 'Matière' }}</td>
-                                <td><strong>{{ $note->valeur ?? '0' }}/20</strong></td>
+                                <td><strong>{{ $note->note ?? '0' }}/20</strong></td>
                                 <td>{{ optional($note->date_evaluation)->format('d/m/Y') ?? ($note->created_at ? $note->created_at->format('d/m/Y') : 'N/A') }}</td>
                             </tr>
                         @endforeach

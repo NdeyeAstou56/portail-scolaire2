@@ -9,17 +9,18 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up()
+    public function up()
 {
     Schema::table('eleves', function (Blueprint $table) {
-        $table->date('date_naissance')->nullable();
+        $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
     });
 }
 
 public function down()
 {
     Schema::table('eleves', function (Blueprint $table) {
-        $table->dropColumn('date_naissance');
+        $table->dropForeign(['user_id']);
+        $table->dropColumn('user_id');
     });
 }
 

@@ -51,12 +51,15 @@ class User extends Authenticatable
     }
     public function eleve()
 {
-    return $this->hasOne(Eleve::class, 'user_id');
+    return $this->hasOne(Eleve::class, 'user_id');  // précise bien la clé étrangère
 }
+
 
 public function enfants()
 {
     return $this->hasMany(Eleve::class, 'parent_id');
 }
+
+
 
 }
