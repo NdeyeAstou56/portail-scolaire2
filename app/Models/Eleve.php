@@ -31,6 +31,12 @@ class Eleve extends Model
     return $this->belongsTo(User::class, 'user_id');
 }
 
+public function parents()
+{
+    return $this->belongsToMany(User::class, 'eleve_parent', 'eleve_id', 'parent_id');
+}
+
+
 
 }
 

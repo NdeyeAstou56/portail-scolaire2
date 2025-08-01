@@ -138,7 +138,7 @@ public function update(Request $request, Eleve $eleve)
     $eleve = $user->eleve;
 
     if (!$eleve) {
-        return "Pas d'élève lié à cet utilisateur"; // debug aussi
+        return ".."; 
     }
 
 
@@ -171,6 +171,20 @@ public function update(Request $request, Eleve $eleve)
 
     return redirect()->back()->with('success', 'Utilisateur associé à l’élève avec succès.');
 }
+public function portailParent()
+{
+    $parent = auth()->user();
+
+    if (!$parent) {
+        abort(403, 'Non authentifié');
+    }
+
+    $eleves = $parent->eleves()->with(['notes' => fn ($q) => $q->latest()->take(5), 'bulletins.annee_scolaire', 'bulletins.periode'])->get();
+
+    return view('parent.dashboard', compact('parent', 'eleves'));
+}
+
+
 
 
 }

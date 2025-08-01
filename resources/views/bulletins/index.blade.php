@@ -53,28 +53,25 @@
                     </th>
                 </tr>
             </thead>
-            <tbody class="text-gray-700">
-                @foreach($bulletins as $bulletin)
-                    <tr class="border-t hover:bg-gray-50">
-                        <td class="py-2 px-4">{{ $bulletin->eleve->nom ?? '-' }}</td>
-                        <td class="py-2 px-4">{{ $bulletin->classe->libelle ?? '-' }}</td>
-                        <td class="py-2 px-4">{{ $bulletin->periode->libelle ?? '-' }}</td>
-                        <td class="py-2 px-4 space-x-2 text-sm text-center">
-                            <a href="{{ route('bulletins.show', $bulletin) }}"
-                               class="inline-block text-blue-500 hover:text-blue-700 transition">👁️ Voir</a>
-                            <a href="{{ route('bulletins.edit', $bulletin) }}"
-                               class="inline-block text-yellow-500 hover:text-yellow-600 transition">✏️ Modifier</a>
-                            <form action="{{ route('bulletins.destroy', $bulletin) }}" method="POST" class="inline-block"
-                                  onsubmit="return confirm('Confirmer la suppression ?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                        class="text-red-500 hover:text-red-600 transition">🗑️ Supprimer</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
+          <tbody class="text-gray-700">
+    @foreach($bulletins as $bulletin)
+        <tr class="border-t hover:bg-gray-50">
+            <td class="py-2 px-4">{{ $bulletin->eleve->user->nom ?? $bulletin->eleve->user->name ?? '-' }}</td>
+            <td class="py-2 px-4">{{ $bulletin->eleve->classe->nom ?? $bulletin->eleve->classe->libelle ?? '-' }}</td>
+            <td class="py-2 px-4">{{ $bulletin->periode->libelle ?? '-' }}</td>
+            <td class="py-2 px-4 space-x-2 text-sm text-center">
+                <a href="{{ route('bulletins.show', $bulletin->id) }}" class="inline-block text-blue-500 hover:text-blue-700 transition">👁️ Voir</a>
+                <a href="{{ route('bulletins.edit', $bulletin) }}" class="inline-block text-yellow-500 hover:text-yellow-600 transition">✏️ Modifier</a>
+                <form action="{{ route('bulletins.destroy', $bulletin) }}" method="POST" class="inline-block" onsubmit="return confirm('Confirmer la suppression ?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="text-red-500 hover:text-red-600 transition">🗑️ Supprimer</button>
+                </form>
+            </td>
+        </tr>
+    @endforeach
+</tbody>
+
         </table>
     </div>
 </div>

@@ -49,9 +49,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function eleve()
+public function eleve()
 {
-    return $this->hasOne(Eleve::class, 'user_id');  // précise bien la clé étrangère
+    return $this->hasOne(Eleve::class, 'user_id');  
 }
 
 
@@ -59,6 +59,16 @@ public function enfants()
 {
     return $this->hasMany(Eleve::class, 'parent_id');
 }
+public function parentProfile()
+{
+    return $this->hasOne(ParentUser::class, 'user_id');
+}
+public function eleves()
+{
+    return $this->belongsToMany(Eleve::class, 'eleve_parent', 'parent_id', 'eleve_id');
+}
+
+
 
 
 

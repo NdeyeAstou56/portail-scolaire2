@@ -45,7 +45,11 @@ Route::get('/dashboard', function () {
 // Dashboards pour chaque rôle (pas besoin de middleware ici)
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 Route::get('/enseignant/dashboard', fn () => view('enseignants.dashboard'))->name('enseignant.dashboard');
-Route::get('/parent/dashboard', fn () => view('parent.dashboard'))->name('parent.dashboard');
+Route::middleware(['auth'])->group(function () {
+Route::get('/parent/dashboard', [EleveController::class, 'portailParent'])->name('parent.dashboard');
+
+Route::get('/eleve/bulletins/{id}', [BulletinController::class, 'showEleve'])->name('eleve.bulletins.show');
+});
 Route::middleware(['auth'])->group(function () {
     Route::get('/eleve/dashboard', [EleveController::class, 'portailEleve'])->name('eleve.dashboard');
     Route::get('/bulletins/{id}/download', [BulletinController::class, 'download'])->name('bulletins.download');
@@ -57,11 +61,10 @@ Route::middleware(['auth'])->group(function () {
 
 // Routes protégées par auth (tous les rôles connectés)
 Route::middleware(['auth'])->group(function () {
-    Route::get('eleves/{eleve}', [EleveController::class, 'show'])->name('eleves.show');
-Route::put('eleves/{eleve}', [EleveController::class, 'update'])->name('eleves.update');
-Route::delete('eleves/{eleve}', [EleveController::class, 'destroy'])->name('eleves.destroy');
-Route::get('eleves/{eleve}/edit', [EleveController::class, 'edit'])->name('eleves.edit');
-Route::resource('eleves', EleveController::class);
+Route::resource('eleves', EleveController::class)->parameters([
+    'eleves' => 'eleve'
+]);
+
 
     Route::resource('enseignants', EnseignantController::class);
     Route::resource('classes', ClasseController::class);
