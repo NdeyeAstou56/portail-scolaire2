@@ -56,12 +56,11 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="space-y-1">
                                 <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Nom complet</span>
-                                <p class="text-sm font-semibold text-gray-900">{{ $bulletin->eleve->user->nom ?? '' }} {{ $bulletin->eleve->user->prenom ?? '' }}</p>
+                                <p class="text-sm font-semibold text-gray-900">{{ $bulletin->eleve->user->name ?? '' }}
+
+</p>
                             </div>
-                            <div class="space-y-1">
-                                <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Matricule</span>
-                                <p class="text-sm font-semibold text-gray-900">{{ $bulletin->eleve->matricule ?? '' }}</p>
-                            </div>
+                           
                             <div class="space-y-1">
                                 <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Classe</span>
                                 <p class="text-sm font-semibold text-gray-900">{{ $bulletin->eleve->classe->nom ?? '' }}</p>
@@ -86,7 +85,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="space-y-1">
                                 <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Moyenne générale</span>
-                                <p class="text-2xl font-bold text-green-600">{{ number_format($bulletin->moyenne_generale ?? 0, 2) }}/20</p>
+                                <p class="text-2xl font-bold text-green-600">{{ number_format($bulletin->moyenne ?? 0, 2) }}/20</p>
                             </div>
                             <div class="space-y-1">
                                 <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Mention</span>

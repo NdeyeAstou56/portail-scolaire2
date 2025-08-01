@@ -490,9 +490,10 @@
                             <strong>{{ $bulletin->annee_scolaire->nom ?? 'Année scolaire' }}</strong><br>
                             <small>{{ $bulletin->periode->nom ?? 'Période' }}</small>
                         </div>
-                        <a href="{{ route('bulletins.download', $bulletin->id) }}" class="download-link" target="_blank">
-                            📥 Télécharger
-                        </a>
+                        <a href="{{ route('bulletins.show', $bulletin->id) }}" class="download-link">
+                           👁️ Voir le bulletin
+                       </a>
+
                     </li>
                 @endforeach
                 </ul>

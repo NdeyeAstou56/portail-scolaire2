@@ -49,6 +49,9 @@ Route::get('/parent/dashboard', fn () => view('parent.dashboard'))->name('parent
 Route::middleware(['auth'])->group(function () {
     Route::get('/eleve/dashboard', [EleveController::class, 'portailEleve'])->name('eleve.dashboard');
     Route::get('/bulletins/{id}/download', [BulletinController::class, 'download'])->name('bulletins.download');
+     Route::get('/eleve/mes-bulletins', [BulletinController::class, 'indexEleve'])->name('eleve.bulletins.index');
+    Route::get('/eleve/bulletins/{id}', [BulletinController::class, 'showEleve'])->name('eleve.bulletins.show');
+    Route::get('/eleve/bulletins/{id}/pdf', [BulletinController::class, 'downloadPDF'])->name('eleve.bulletins.download');
 });
 
 
