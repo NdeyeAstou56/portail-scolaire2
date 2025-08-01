@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Mail\BulletinParentDisponibleMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -88,6 +88,12 @@ class BulletinController extends Controller
         if ($bulletin->eleve?->user?->email) {
             Mail::to($bulletin->eleve->user->email)->send(new \App\Mail\BulletinDisponibleMail($bulletin));
         }
+
+       if ($bulletin->eleve?->parent?->email) {
+    Mail::to($bulletin->eleve->parent->email)
+        ->send(new BulletinParentDisponibleMail($bulletin));
+}
+
 
         return redirect()->route('bulletins.index')->with('success', 'Bulletin créé, PDF généré et mail envoyé.');
     }
