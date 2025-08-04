@@ -147,29 +147,70 @@ public function update(Request $request, Eleve $eleve)
     $eleve->delete();
     return redirect()->route('eleves.index')->with('success', 'Élève supprimé.');
 }
-  public function portailEleve()
+
+
+
+ public function portailEleve()
 {
     $user = auth()->user();
-
     if (!$user) {
-        return "Utilisateur non authentifié"; // pour debug, tu peux remplacer par abort(403)
+        return abort(403, 'Utilisateur non authentifié');
     }
 
     $eleve = $user->eleve;
-
     if (!$eleve) {
-        return ".."; 
+        abort(404, 'Élève introuvable');
     }
 
+    // Récupérer les bulletins avec leurs notes (par matière)
+    $bulletins = $eleve->bulletins()->with(['notes'])->latest()->get();
 
-    // récupère les notes récentes et les bulletins liés à cet élève
-    $recentNotes = $eleve->notes()->latest()->take(5)->get();
-    $moyenne = $recentNotes->avg('note');  // ou 'valeur' selon ta colonne
+    // Calculer moyenne, mention et appréciation pour chaque bulletin
+    foreach ($bulletins as $bulletin) {
+        $totalPoints = 0;
+        $totalCoef = 0;
 
-    $bulletins = $eleve->bulletins()->with(['annee_scolaire', 'periode'])->latest()->get();
+        foreach ($bulletin->notes ?? [] as $note) {
+            $valeur = $note->note ?? 0;
+            $coef = $note->coefficient ?? 1;
+            $totalPoints += $valeur * $coef;
+            $totalCoef += $coef;
+        }
 
-    return view('eleves.dashboard', compact('eleve', 'recentNotes', 'bulletins','moyenne'));
+        $bulletin->moyenne = $totalCoef ? round($totalPoints / $totalCoef, 2) : 0;
+
+        $bulletin->mention = match (true) {
+            $bulletin->moyenne >= 16 => 'Très Bien',
+            $bulletin->moyenne >= 14 => 'Bien',
+            $bulletin->moyenne >= 12 => 'Assez Bien',
+            $bulletin->moyenne >= 10 => 'Passable',
+            default => 'Insuffisant',
+        };
+
+        $bulletin->appreciation = $bulletin->appreciation ?? '-';
+    }
+
+    // Récupérer les notes récentes (par exemple les 5 dernières notes)
+    $recentNotes = Note::whereIn('bulletin_id', $bulletins->pluck('id'))->latest()->take(5)->get();
+
+    // Calculer la moyenne générale de toutes les notes récentes
+    $moyenne = null;
+    if ($recentNotes->count() > 0) {
+        $totalPoints = 0;
+        $totalCoef = 0;
+        foreach ($recentNotes as $note) {
+            $valeur = $note->note ?? 0;
+            $coef = $note->coefficient ?? 1;
+            $totalPoints += $valeur * $coef;
+            $totalCoef += $coef;
+        }
+        $moyenne = $totalCoef ? round($totalPoints / $totalCoef, 2) : null;
+    }
+
+    return view('eleves.dashboard', compact('eleve', 'bulletins', 'recentNotes', 'moyenne'));
 }
+
+
 
 
 

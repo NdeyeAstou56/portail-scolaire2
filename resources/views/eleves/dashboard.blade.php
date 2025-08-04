@@ -477,32 +477,37 @@
         </div>
 
         {{-- Bulletins --}}
-        <div class="card">
-            <h2>
-                <div class="card-icon" style="background: linear-gradient(45deg, #f59e0b, #fbbf24);">📄</div>
-                Bulletins disponibles
-            </h2>
-            @if(isset($bulletins) && !$bulletins->isEmpty())
-                <ul class="bulletin-list">
-                @foreach($bulletins as $bulletin)
-                    <li class="bulletin-item">
-                        <div class="bulletin-info">
-                            <strong>{{ $bulletin->annee_scolaire->nom ?? 'Année scolaire' }}</strong><br>
-                            <small>{{ $bulletin->periode->nom ?? 'Période' }}</small>
-                        </div>
-                        <a href="{{ route('bulletins.show', $bulletin->id) }}" class="download-link">
-                           👁️ Voir le bulletin
-                       </a>
-
-                    </li>
-                @endforeach
-                </ul>
-            @else
-                <div class="empty-state">
-                    Aucun bulletin disponible pour le moment.
+<div class="card">
+    <h2>
+        <div class="card-icon" style="background: linear-gradient(45deg, #f59e0b, #fbbf24);">📄</div>
+        Bulletins disponibles
+    </h2>
+    @if(isset($bulletins) && !$bulletins->isEmpty())
+        <ul class="bulletin-list">
+        @foreach($bulletins as $bulletin)
+            <li class="bulletin-item">
+                <div class="bulletin-info mb-2">
+                    <strong>{{ $bulletin->annee_scolaire->nom ?? 'Année scolaire' }}</strong><br>
+                    <small>{{ $bulletin->periode->libelle ?? $bulletin->periode->nom ?? 'Période' }}</small>
                 </div>
-            @endif
+                <div class="bulletin-stats mb-2">
+                    <p><strong>Moyenne générale :</strong> {{ number_format($bulletin->moyenne ?? 0, 2) }}/20</p>
+                    <p><strong>Mention :</strong> {{ $bulletin->mention ?? '-' }}</p>
+                    <p><strong>Appréciation :</strong> {{ $bulletin->appreciation ?? '-' }}</p>
+                </div>
+                <a href="{{ route('bulletins.show', $bulletin->id) }}" class="download-link">
+                   👁️ Voir le bulletin
+                </a>
+            </li>
+        @endforeach
+        </ul>
+    @else
+        <div class="empty-state">
+            Aucun bulletin disponible pour le moment.
         </div>
+    @endif
+</div>
+
 
         {{-- Infos générales --}}
         <div class="card full-width">
