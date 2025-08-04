@@ -30,10 +30,6 @@
                 👨‍🎓 <span>Mes Élèves</span>
             </a>
 
-            <a href="{{ route('bulletins.index') }}" class="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-purple-100 text-purple-700 font-medium transition">
-                📑 <span>Bulletins</span>
-            </a>
-
             <form method="POST" action="{{ route('logout') }}" class="pt-4">
                 @csrf
                 <button type="submit" class="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-red-100 text-red-600 font-medium transition w-full">

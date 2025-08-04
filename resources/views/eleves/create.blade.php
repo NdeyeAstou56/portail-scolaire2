@@ -58,6 +58,32 @@
             @error('document_justificatif') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
         </div>
 
+        <fieldset class="border-t border-indigo-200 pt-6">
+    <legend class="text-xl font-bold text-indigo-700 mb-4">Informations du parent</legend>
+
+    <div class="mb-4">
+        <label for="parent_nom" class="block font-semibold text-indigo-800">Nom du parent</label>
+        <input type="text" name="parent_nom" id="parent_nom" value="{{ old('parent_nom') }}" required
+               class="w-full border border-indigo-300 rounded-lg px-4 py-3">
+        @error('parent_nom') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+    </div>
+
+    <div class="mb-4">
+        <label for="parent_prenom" class="block font-semibold text-indigo-800">Prénom du parent</label>
+        <input type="text" name="parent_prenom" id="parent_prenom" value="{{ old('parent_prenom') }}" required
+               class="w-full border border-indigo-300 rounded-lg px-4 py-3">
+        @error('parent_prenom') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+    </div>
+
+    <div class="mb-4">
+        <label for="parent_email" class="block font-semibold text-indigo-800">Email du parent</label>
+        <input type="email" name="parent_email" id="parent_email" value="{{ old('parent_email') }}" required
+               class="w-full border border-indigo-300 rounded-lg px-4 py-3">
+        @error('parent_email') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+    </div>
+</fieldset>
+
+
         <button type="submit" 
             class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg shadow-md transition">
             Enregistrer

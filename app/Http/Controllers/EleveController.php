@@ -39,10 +39,25 @@ public function store(Request $request)
         'date_naissance' => 'required|date|before:today',
         'classe_id' => 'required|exists:classes,id',
         'document_justificatif' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+
+        // Champs parent
+        'parent_nom' => 'required|string',
+        'parent_prenom' => 'required|string',
+        'parent_email' => 'required|email|unique:users,email',
     ]);
 
+    // Création du compte parent
+    $parent = User::create([
+        'name' => $request->parent_nom . ' ' . $request->parent_prenom,
+        'email' => $request->parent_email,
+        'password' => Hash::make('Parent123'),
+        'role' => 'parent',
+    ]);
+
+    // Génération identifiant élève
     $validated['identifiant'] = strtolower($request->nom . '.' . $request->prenom . '.' . rand(1000, 9999));
 
+    // Upload document
     if ($request->hasFile('document_justificatif')) {
         $file = $request->file('document_justificatif');
         $filename = time() . '_' . $file->getClientOriginalName();
@@ -50,21 +65,26 @@ public function store(Request $request)
         $validated['document_justificatif'] = $filename;
     }
 
-    // Création du User lié
-    $user = User::create([
+    // Création du compte élève
+    $userEleve = User::create([
         'name' => $request->nom . ' ' . $request->prenom,
         'email' => $request->email,
-        'password' => Hash::make('Passer123'), // tu peux changer ça
+        'password' => Hash::make('Eleve123'),
         'role' => 'eleve',
     ]);
 
-    // Création de l'élève avec association user_id
+    // Création de l’élève
     $eleve = new Eleve($validated);
-    $eleve->user()->associate($user);
+    $eleve->user()->associate($userEleve);
     $eleve->save();
 
-    return redirect()->route('eleves.index')->with('success', 'Élève ajouté avec succès.');
+    // ➕ Création de la relation dans la table pivot eleve_parent
+    $eleve->parents()->attach($parent->id);
+
+    return redirect()->route('eleves.index')->with('success', 'Élève et parent ajoutés avec succès.');
 }
+
+
 
     // Affiche un seul élève
     public function show(Eleve $eleve)

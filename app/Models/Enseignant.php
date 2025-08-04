@@ -36,4 +36,9 @@ class Enseignant extends Model
     {
         return $this->hasMany(Affectation::class);
     }
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
 }

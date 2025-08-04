@@ -67,6 +67,10 @@ public function eleves()
 {
     return $this->belongsToMany(Eleve::class, 'eleve_parent', 'parent_id', 'eleve_id');
 }
+public function enseignant()
+{
+    return $this->hasOne(Enseignant::class);
+}
 
 
 

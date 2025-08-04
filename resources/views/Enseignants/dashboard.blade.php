@@ -40,13 +40,7 @@
                 color="green"
                 :link="route('eleves.index')" />
 
-            {{-- Bulletins --}}
-            <x-dashboard-card 
-                title="Bulletins" 
-                text="Consulter les bulletins"
-                icon="https://cdn-icons-png.flaticon.com/512/709/709790.png"
-                color="indigo"
-                :link="route('bulletins.index')" />
+        
         </div>
     </div>
 @endsection
